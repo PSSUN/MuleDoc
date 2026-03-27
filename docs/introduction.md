@@ -1,10 +1,8 @@
-# Introduction: Problem Statement and Method Overview
+# Introduction: Why Mule?
 
-Mule (Variant Effect by State-aware Perturbation Analysis) addresses the following question:
+Mule addresses the following question:
 
-> In single-cell and spatial transcriptomics data, how can SNV-driven transcriptomic perturbation effects be quantified robustly and interpretably under sequencing noise, uneven coverage, and batch heterogeneity?
-
-The central difficulty is that SNV evidence is sparse and uncertain, while cell-state signals are high-dimensional and batch-sensitive. As a result, naive carrier/non-carrier binarization can produce biased effect estimates.
+Single-nucleotide variants (SNVs) are central to tumor evolution, yet their functional consequences remain largely unresolved at single-cell resolution. Crucially, it remains unknown how the impact of specific SNVs varies across patients, cell types, or cellular states, hindering mechanistic understanding and therapeutic stratification. Current strategies operate predominantly at the bulk level and depend on population recurrence or evolutionary constraint, capturing signatures of long-term selection rather than direct, acute cellular effects. Here, we present Mule, a single-cell causal modeling framework that redefines SNVs as endogenous perturbations of cellular state. By quantifying mutation-induced displacement in transcriptomic space, Mule directly measures functional impact and uncovers the dynamic roles of individual SNVs throughout the spatiotemporal evolution of tumors. 
 
 ```{figure} _static/Figure-1.png
 :align: center
