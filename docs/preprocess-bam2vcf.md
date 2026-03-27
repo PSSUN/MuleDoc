@@ -1,0 +1,102 @@
+# Preprocessing I: BAM-to-VCF Calling
+
+`bam2vcf.sh` calls SNVs from BAM files and removes known RNA editing sites in the final filtering step.
+
+## 1. Command and Arguments
+
+```bash
+bash src/preprocess/bam2vcf.sh \
+  <OUTER_JOBS> <INNER_THREADS> <reference.fa> <VarScan.jar> <RNA_editing.bed> <output_dir> <bam1> [bam2 ...]
+```
+
+### Argument Reference
+
+| Argument | Meaning | Typical Values |
+|---|---|---|
+| `OUTER_JOBS` | Number of BAMs processed in parallel (sample-level) | 4 / 6 / 8 |
+| `INNER_THREADS` | samtools threads per BAM | 2 / 4 / 8 |
+| `reference.fa` | Reference genome FASTA | `hg38.fa` |
+| `VarScan.jar` | Path to VarScan JAR | `/path/VarScan.jar` |
+| `RNA_editing.bed` | Known RNA editing BED file | `RNA_editing.bed` |
+| `output_dir` | Output directory | `./snv_call_out` |
+| `bam1...` | One or more BAM files | `sample1.bam sample2.bam` |
+
+### Example
+
+```bash
+bash src/preprocess/bam2vcf.sh \
+  6 4 genome.fa VarScan.jar RNA_edit.bed ./out sample1.bam sample2.bam
+```
+
+---
+
+## 2. Per-sample Processing Steps
+
+1. `samtools view -F 1804 -q 20` filters BAM reads.
+2. `samtools index` creates index for the filtered BAM.
+3. `samtools mpileup -B -q 20 -Q 20` generates pileup.
+4. `VarScan mpileup2snp --min-coverage 8 --min-var-freq 0.01 --min-reads2 3` calls SNVs.
+5. `bedtools intersect -v` removes known RNA editing sites.
+
+### Threshold Summary
+
+| Threshold | Step | Effect |
+|---|---|---|
+| `-q 20` | samtools view/mpileup | Filters low mapping-quality reads |
+| `-Q 20` | samtools mpileup | Filters low base-quality observations |
+| `--min-coverage 8` | VarScan | Excludes low-depth loci |
+| `--min-var-freq 0.01` | VarScan | Keeps variants with allele frequency ≥ 1% |
+| `--min-reads2 3` | VarScan | Requires at least 3 ALT-supporting reads |
+
+---
+
+## 3. Parallelization and Performance Notes
+
+The script uses two levels of parallelism:
+
+- Outer level: `OUTER_JOBS` (how many BAM files run simultaneously)
+- Inner level: `INNER_THREADS` (threads used by samtools per BAM)
+
+Practical guidance:
+
+- If machine CPU core count is `N`, keep `OUTER_JOBS * INNER_THREADS` near `N`.
+- On slow storage, prefer moderate `OUTER_JOBS` and slightly higher `INNER_THREADS`.
+
+---
+
+## 4. Built-in Input Validation
+
+Before execution, the script checks:
+
+1. Existence of `reference.fa`, `VarScan.jar`, and `RNA_editing.bed`
+2. Existence of each BAM input
+3. Existence of BAM index (`sample.bam.bai` or `sample.bai`)
+4. Chromosome naming compatibility between FASTA and BED (`chr*` vs non-`chr*`)
+
+If required files are missing, the script exits early.
+
+---
+
+## 5. Output Naming (Per Sample)
+
+- `{sample}.f1804q20.bam`
+- `{sample}.f1804q20.bam.bai`
+- `{sample}.f1804q20.mpileup`
+- `{sample}.f1804q20.vcf`
+- `{sample}.f1804q20.no_rna_editing.vcf` (recommended downstream input)
+
+In most workflows, `no_rna_editing.vcf` is used as `samples.<name>.vcf` in `snv2barcode.py`.
+
+---
+
+## 6. Common Failure Cases
+
+- Missing `.bai` index for BAM files
+- Mismatched chromosome naming between reference FASTA and RNA editing BED
+
+Recommended troubleshooting order:
+
+1. Confirm command has all required arguments
+2. Confirm all file paths exist
+3. Confirm BAM index presence and naming compatibility
+4. Confirm runtime tools are available: `samtools`, `bedtools`, `java`
