@@ -1,5 +1,9 @@
 # Workflow Overview
 
+## Data Preparation
+
+Only BAM files from single-cell RNA-seq read alignment are required to run the full workflow on your own private data. Whenever possible, use full-length sequencing data so that more genomic regions are covered and more SNV information can be obtained.
+
 ## Pipeline Stages (Logical Order)
 
 1. `src/preprocess/bam2vcf.sh`: call SNVs from multiple BAM files and remove known RNA editing sites.
