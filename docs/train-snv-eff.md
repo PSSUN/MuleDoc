@@ -1,17 +1,17 @@
 # Training II: SNV Perturbation Modeling
 
-`snv_eff.py` trains the SNV perturbation model on top of RNA backbone representations and exports ranking/scoring outputs.
+`snv_effect.py` trains the SNV perturbation model on top of RNA backbone representations and exports ranking/scoring outputs.
 
 ## 1. Run Command
 
 ```bash
-python src/train/snv_eff.py -y src/train/train_config.yaml
+python src/train/snv_effect.py -y src/train/train_config.yaml
 ```
 
 Multi-GPU distributed mode:
 
 ```bash
-torchrun --nproc_per_node=4 src/train/snv_eff.py -y src/train/train_config.yaml
+torchrun --nproc_per_node=4 src/train/snv_effect.py -y src/train/train_config.yaml
 ```
 
 ---

@@ -1,6 +1,6 @@
 # Training I: RNA Backbone Pretraining
 
-`pre_train.py` builds the RNA backbone and writes encoder-derived latent representations into the finetuning dataset used by `snv_eff.py`.
+`pre_train.py` builds the RNA backbone and writes encoder-derived latent representations into the finetuning dataset used by `snv_effect.py`.
 
 ## 1. Run Command
 
@@ -114,8 +114,8 @@ Additional notes:
 
 Downstream usage:
 
-- `finetune_aligned.h5ad` is auto-loaded by `snv_eff.py` from `result_folder`
-- `rna_backbone_pretrained.pt` is used for optional weight transfer in `snv_eff.py`
+- `finetune_aligned.h5ad` is auto-loaded by `snv_effect.py` from `result_folder`
+- `rna_backbone_pretrained.pt` is used for optional weight transfer in `snv_effect.py`
 
 ---
 

@@ -59,8 +59,8 @@ The full workflow uses two groups of inputs.
 |---|---|---|
 | `pretrain_adata.h5ad` | RNA pretraining data | Yes (`pre_train`) |
 | `finetune_adata.h5ad` | RNA finetuning data | Yes (`pre_train`) |
-| `all_samples_merged_barcode_snv_matrix.h5ad` | Output from `snv2barcode` | Yes (`snv_eff`) |
-| `ann_csv` | SNV annotation table | Yes (`snv_eff`) |
+| `all_samples_merged_barcode_snv_matrix.h5ad` | Output from `snv2barcode` | Yes (`snv_effect`) |
+| `ann_csv` | SNV annotation table | Yes (`snv_effect`) |
 
 Important for pretraining batch-aware behavior:
 
@@ -95,7 +95,7 @@ python src/preprocess/snv2barcode.py src/preprocess/snv2barcode_config.yaml
 python src/train/pre_train.py -y src/train/train_config.yaml
 
 # 3) Train and score SNV perturbation effects
-python src/train/snv_eff.py -y src/train/train_config.yaml
+python src/train/snv_effect.py -y src/train/train_config.yaml
 ```
 
 If you start from raw BAM files, run `bam2vcf.sh` before step 1.

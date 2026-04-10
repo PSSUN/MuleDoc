@@ -43,8 +43,8 @@ Mule uses a three-stage framework: evidence construction → representation lear
    - `pre_train.py`: VAE-based RNA backbone pretraining to learn latent cell-state representations;
    - optional adversarial branch for batch-effect attenuation.
 
-3. **SNV perturbation effect estimation (snv-eff)**
-   - `snv_eff.py`: SNV embedding + attention in latent space for conditional perturbation scoring;
+3. **SNV perturbation effect estimation (snv-effect)**
+   - `snv_effect.py`: SNV embedding + attention in latent space for conditional perturbation scoring;
    - outputs at both cell and cell-type granularity.
 
 ---

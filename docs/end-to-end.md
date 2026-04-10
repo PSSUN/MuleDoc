@@ -19,7 +19,7 @@ python src/preprocess/snv2barcode.py src/preprocess/snv2barcode_config.yaml
 python src/train/pre_train.py -y src/train/train_config.yaml
 
 # 4) Train and score SNV perturbation effects
-python src/train/snv_eff.py -y src/train/train_config.yaml
+python src/train/snv_effect.py -y src/train/train_config.yaml
 ```
 
 ## 2. Checkpoints After Each Step
