@@ -18,8 +18,10 @@ Figure 1. Mule workflow overview. The pipeline consists of SNV evidence construc
 
 Typical analyses can separately obtain:
 
-1. Variant-layer information (ALT support at cell level), and
+1. Variant-layer information (ALT support at cell level);
 2. Expression-layer information (cell states, cell types, transcriptomic patterns).
+
+However, they often lack a robust mechanism to connect these two layers at single-cell resolution.
 
 However, integrating these layers in a statistically stable way is non-trivial due to:
 
