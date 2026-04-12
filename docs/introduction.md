@@ -21,9 +21,7 @@ Typical analyses can separately obtain:
 1. Variant-layer information (ALT support at cell level);
 2. Expression-layer information (cell states, cell types, transcriptomic patterns).
 
-However, they often lack a robust mechanism to connect these two layers at single-cell resolution.
-
-However, integrating these layers in a statistically stable way is non-trivial due to:
+The main challenge is not obtaining either layer alone, but linking them at single-cell resolution in a statistically stable way. This is difficult because of:
 
 - **Evidence uncertainty**: missing ALT support does not necessarily indicate true absence of variant;
 - **Technical and batch noise**: platform/sample effects can inflate spurious associations;
@@ -63,14 +61,18 @@ Mule first learns a stable latent representation of cell state from RNA data, th
 
 The framework provides attention-based ranking and effect scores at both cell-level and cell-type-level, enabling direct biological interpretation of candidate SNVs.
 
+### 3.4 Context-aware relative perturbation scoring
+
+Mule measures the relative perturbation strength between SNVs under different cellular backgrounds, keeping the comparison at single-cell resolution rather than collapsing effects into a single bulk-level score.
+
 ---
 
 ## 4. Intended Use Cases
 
 This method is intended for settings where:
 
-- single-cell or spatial transcriptomic expression matrices are available,
-- SNV evidence matrices can be built from BAM/VCF at cell (or spot) level,
-- the goal is perturbation effect estimation rather than simple co-occurrence statistics.
+- single-cell expression matrices are available, preferably from full-length protocols;
+- SNV evidence matrices can be built from BAM/VCF data at the cell level;
+- the goal is to estimate perturbation effects rather than simple co-occurrence statistics.
 
 Continue with **Getting Started** for environment setup and a minimal reproducible run.
