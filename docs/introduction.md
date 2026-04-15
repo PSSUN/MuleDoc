@@ -1,15 +1,15 @@
-# Introduction: Why Mule?
+# Introduction: Why PrismSNV?
 
-Mule addresses the following question:
+PrismSNV addresses the following question:
 
-Single-nucleotide variants (SNVs) are central to tumor evolution, yet their functional consequences remain largely unresolved at single-cell resolution. Crucially, it remains unknown how the impact of specific SNVs varies across patients, cell types, or cellular states, hindering mechanistic understanding and therapeutic stratification. Current strategies operate predominantly at the bulk level and depend on population recurrence or evolutionary constraint, capturing signatures of long-term selection rather than direct, acute cellular effects. Here, we present Mule, a single-cell causal modeling framework that redefines SNVs as endogenous perturbations of cellular state. By quantifying mutation-induced displacement in transcriptomic space, Mule directly measures functional impact and uncovers the dynamic roles of individual SNVs throughout the spatiotemporal evolution of tumors. 
+Single-nucleotide variants (SNVs) are central to tumor evolution, yet their functional consequences remain largely unresolved at single-cell resolution. Crucially, it remains unknown how the impact of specific SNVs varies across patients, cell types, or cellular states, hindering mechanistic understanding and therapeutic stratification. Current strategies operate predominantly at the bulk level and depend on population recurrence or evolutionary constraint, capturing signatures of long-term selection rather than direct, acute cellular effects. Here, we present PrismSNV, a single-cell causal modeling framework that redefines SNVs as endogenous perturbations of cellular state. By quantifying mutation-induced displacement in transcriptomic space, PrismSNV directly measures functional impact and uncovers the dynamic roles of individual SNVs throughout the spatiotemporal evolution of tumors. 
 
 ```{figure} _static/Figure-1.png
 :align: center
 :width: 92%
-:alt: Mule workflow overview
+:alt: PrismSNV workflow overview
 
-Figure 1. Mule workflow overview. The pipeline consists of SNV evidence construction, state representation learning, and perturbation effect estimation.
+Figure 1. PrismSNV workflow overview. The pipeline consists of SNV evidence construction, state representation learning, and perturbation effect estimation.
 ```
 
 ---
@@ -31,7 +31,7 @@ The main challenge is not obtaining either layer alone, but linking them at sing
 
 ## 2. Methodological Framework
 
-Mule uses a three-stage framework: evidence construction → representation learning → perturbation scoring.
+PrismSNV uses a three-stage framework: evidence construction → representation learning → perturbation scoring.
 
 1. **SNV evidence construction (preprocess)**
    - `bam2vcf.sh`: BAM filtering, pileup, SNV calling, and RNA editing-site exclusion;
@@ -55,7 +55,7 @@ In `snv2barcode.py`, REF-only observations are not naively collapsed to zero. In
 
 ### 3.2 State-first, perturbation-second strategy
 
-Mule first learns a stable latent representation of cell state from RNA data, then estimates SNV perturbation effects in that space, reducing noise amplification from direct high-dimensional modeling.
+PrismSNV first learns a stable latent representation of cell state from RNA data, then estimates SNV perturbation effects in that space, reducing noise amplification from direct high-dimensional modeling.
 
 ### 3.3 Multi-level interpretability
 
@@ -63,7 +63,7 @@ The framework provides attention-based ranking and effect scores at both cell-le
 
 ### 3.4 Context-aware relative perturbation scoring
 
-Mule measures the relative perturbation strength between SNVs under different cellular backgrounds, keeping the comparison at single-cell resolution rather than collapsing effects into a single bulk-level score.
+PrismSNV measures the relative perturbation strength between SNVs under different cellular backgrounds, keeping the comparison at single-cell resolution rather than collapsing effects into a single bulk-level score.
 
 ---
 
