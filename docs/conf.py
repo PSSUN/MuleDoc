@@ -1,5 +1,5 @@
-project = "Mule User Documentation"
-author = "Mule Team"
+project = "PrismSNV User Documentation"
+author = "PrismSNV Team"
 release = "1.0.0"
 language = "en"
 
