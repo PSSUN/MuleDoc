@@ -1,11 +1,11 @@
-# Mule User Documentation
+# PrismSNV User Documentation
 
-This documentation describes the complete Mule pipeline:
+This documentation describes the complete PrismSNV pipeline:
 **BAM-to-VCF Calling → SNV-to-Barcode Matrix Construction → RNA Backbone Pretraining → SNV Perturbation Modeling**.
 
 ## Reader Guide
 
-- If this is your first time using Mule, read in this order:
+- If this is your first time using PrismSNV, read in this order:
   1. [Introduction](introduction.md)
   2. [Getting Started](getting-started.md)
   3. [Workflow Overview](workflow-overview.md)
