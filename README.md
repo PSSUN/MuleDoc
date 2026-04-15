@@ -1,6 +1,6 @@
-# Mule User Documentation (Sphinx + Read the Docs + Shibuya)
+# PrismSNV User Documentation (Sphinx + Read the Docs + Shibuya)
 
-This repository contains the standalone Mule user documentation project built with:
+This repository contains the standalone PrismSNV user documentation project built with:
 
 - Sphinx
 - Read the Docs

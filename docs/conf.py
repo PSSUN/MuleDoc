@@ -27,7 +27,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "shibuya"
-html_title = "Mule User Documentation"
+html_title = "PrismSNV User Documentation"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 
