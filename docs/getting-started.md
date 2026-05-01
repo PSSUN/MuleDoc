@@ -42,7 +42,7 @@ The full workflow uses two groups of inputs.
 | Input | Purpose | Required |
 |---|---|---|
 | `reference.fa` | Reference genome | Yes |
-| `RNA_editing.bed` | Known RNA editing sites | Yes |
+| `RNA_editing.bed` | Known RNA editing sites; you can download [here](https://doi.org/10.6084/m9.figshare.30460229) | Yes |
 | `*.bam` + `*.bai` | Per-sample alignment data | Yes |
 | sample-level VCF | SNV source for `snv2barcode.py` | Yes |
 | barcode file | Build barcode×SNV matrix | Yes |
