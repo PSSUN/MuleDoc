@@ -57,10 +57,13 @@ The full workflow uses two groups of inputs.
 
 | Input | Source | Required |
 |---|---|---|
-| `pretrain_adata.h5ad` | RNA pretraining data | Yes (`pre_train`) |
-| `finetune_adata.h5ad` | RNA finetuning data | Yes (`pre_train`) |
 | `all_samples_merged_barcode_snv_matrix.h5ad` | Output from `snv2barcode` | Yes (`snv_effect`) |
-| `ann_csv` | SNV annotation table | Yes (`snv_effect`) |
+| `ann_csv` | SNV annotation table | Optional (`snv_effect`) |
+
+Notes:
+
+- `pre_train.py` consumes the raw RNA AnnData paths configured in YAML and generates the aligned training artifacts itself; `pretrain_adata.h5ad` and `finetune_adata.h5ad` should not be listed here as standalone user-prepared training inputs.
+- `snv_effect.py` reads the RNA-side artifact from `result_folder/finetune_aligned.h5ad`, which is produced by `pre_train.py`.
 
 Important for pretraining batch-aware behavior:
 
