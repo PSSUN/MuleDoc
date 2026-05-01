@@ -1,4 +1,4 @@
-# Preprocessing II: SNV-to-Barcode Matrix Construction
+# Step 1 (Preprocessing): SNV-to-Barcode Matrix Construction
 
 `snv2barcode.py` converts sample-level SNV evidence into barcode×SNV `AnnData` matrices and produces a merged matrix for training.
 

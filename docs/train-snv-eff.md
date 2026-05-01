@@ -1,4 +1,4 @@
-# Training II: SNV Perturbation Modeling
+# Step 2 (Training): SNV Perturbation Modeling
 
 `snv_effect.py` trains the SNV perturbation model on top of RNA backbone representations and exports ranking/scoring outputs.
 

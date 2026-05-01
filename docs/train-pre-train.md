@@ -1,4 +1,4 @@
-# Training I: RNA Backbone Pretraining
+# Step 2 (Training): RNA Backbone Pretraining
 
 `pre_train.py` builds the RNA backbone and writes encoder-derived latent representations into the finetuning dataset used by `snv_effect.py`.
 

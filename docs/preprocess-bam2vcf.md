@@ -1,4 +1,4 @@
-# Preprocessing I: BAM-to-VCF Calling
+# Step 1 (Preprocessing): BAM-to-VCF Calling
 
 `bam2vcf.sh` calls SNVs from BAM files and removes known RNA editing sites in the final filtering step.
 

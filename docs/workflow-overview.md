@@ -4,12 +4,14 @@
 
 Only `BAM files` from single-cell RNA-seq read alignment are required to run the full workflow on your own private data. Whenever possible, use full-length sequencing data so that more genomic regions are covered and more SNV information can be obtained.
 
-## Pipeline Stages (Logical Order)
+## Pipeline Stages (User-Facing 2-Step View)
 
-1. `src/preprocess/bam2vcf.sh`: call SNVs from multiple BAM files and remove known RNA editing sites.
-2. `src/preprocess/snv2barcode.py`: build per-sample and merged barcode×SNV matrices.
-3. `src/train/pre_train.py`: pretrain RNA backbone and prepare aligned finetuning data.
-4. `src/train/snv_effect.py`: train SNV perturbation model and export attention/score outputs.
+1. **Step 1: Preprocessing**
+   - `src/preprocess/bam2vcf.sh`: call SNVs from multiple BAM files and remove known RNA editing sites.
+   - `src/preprocess/snv2barcode.py`: build per-sample and merged barcode×SNV matrices.
+2. **Step 2: Training**
+   - `src/train/pre_train.py`: pretrain RNA backbone and prepare aligned finetuning data.
+   - `src/train/snv_effect.py`: train SNV perturbation model and export attention/score outputs.
 
 ## Stage Handoffs (Critical)
 

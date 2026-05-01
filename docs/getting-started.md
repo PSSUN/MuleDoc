@@ -85,17 +85,19 @@ project-root/
 ## 4. Minimal Execution Order
 
 ```bash
-# 1) Preprocess and build merged SNV matrix
+# Step 1: Preprocessing
+# If you start from raw BAM files, run bam2vcf.sh first.
 python src/preprocess/snv2barcode.py src/preprocess/snv2barcode_config.yaml
 
-# 2) Pretrain RNA backbone
+# Step 2: Training
+# 2.1 Pretrain RNA backbone
 python src/train/pre_train.py -y src/train/train_config.yaml
 
-# 3) Train and score SNV perturbation effects
+# 2.2 Train and score SNV perturbation effects
 python src/train/snv_effect.py -y src/train/train_config.yaml
 ```
 
-If you start from raw BAM files, run `bam2vcf.sh` before step 1.
+This is the full user-facing flow: one preprocessing step, then one training step.
 
 ---
 
