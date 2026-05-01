@@ -23,7 +23,7 @@ result_folder: ./snv_result
 
 snv_eff:
   adata_snv: /path/to/all_samples_merged_barcode_snv_matrix.h5ad
-  ann_csv: /path/to/annotation.csv
+  ann_csv: /path/to/annotation.csv  # optional
   min_cnt: 100
   n_top: 50
   batch_size_train: 256
@@ -44,7 +44,8 @@ snv_eff:
 ### 2.1 Required Fields
 
 - `snv_eff.adata_snv`
-- `snv_eff.ann_csv`
+
+`snv_eff.ann_csv` is optional. If omitted, scoring still runs and annotation metadata columns in the score CSVs are left empty.
 
 ### 2.2 Common Parameter Guidance
 
@@ -92,15 +93,20 @@ Behavior highlights:
 - `snv_perturbation_model.pt`
 - `top_snv_attention.csv`
 - `snv_perturbation_scores_by_cell.csv`
-- `top_snv_attention_by_celltype.csv`
-- `snv_perturbation_scores_by_celltype.csv`
-- `cell_perturbation_scores.csv`
-- `cell_perturbation_and_celltype_umap.pdf`
+- `snv_perturbation_scores.csv` when `cell_type_free=true`
+- `top_snv_attention_by_celltype.csv` when `cell_type_free=false`
+- `snv_perturbation_scores_by_celltype.csv` when `cell_type_free=false`
+- `snv_cooccurrence_dedup_removed.csv` when `cell_type_free=false`
+- `cell_cluster_marker_genes_top10.csv` when `cell_type_free=false`
+- `adata_rna_latent_labeled.h5ad` when `cell_type_free=false`
+- `cell_perturbation_scores.csv` when `cell_type_free=false`
+- `cell_perturbation/<celltype>_cell_perturbation.csv` for populated high/low perturbation cell lists when `cell_type_free=false`
+- `cell_perturbation_and_celltype_umap.pdf` when `cell_type_free=false`
 
 Output branches by mode:
 
-- `cell_type_free=true`: produces global `snv_perturbation_scores.csv`
-- `cell_type_free=false`: produces cell-type-aware score files
+- `cell_type_free=true`: produces global `snv_perturbation_scores.csv` and skips clustering/aggregation outputs
+- `cell_type_free=false`: produces cell-type-aware score files, co-occurrence de-duplication audit, per-cell perturbation tables, and UMAP outputs
 
 ---
 
