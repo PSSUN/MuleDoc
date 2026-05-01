@@ -47,6 +47,19 @@ snv_eff:
 
 `snv_eff.ann_csv` is optional. If omitted, scoring still runs and annotation metadata columns in the score CSVs are left empty.
 
+Accepted `ann_csv` formats in the current code:
+
+- `.csv` comma-delimited tables
+- `.tsv` or `.txt` tab-delimited tables
+- some whitespace-delimited text tables (fallback parsing), which is useful for certain ANNOVAR exports
+
+Recommended content patterns:
+
+- Either provide a direct SNV identifier column such as `name`, `snv`, `variant`, or `id`, with values like `chr1:123456_A>T`
+- Or provide separate variant columns that can be combined by the script: `chr` / `#chr` / `chrom` / `#chrom`, `pos` / `position` / `start`, plus `ref` and `alt`
+
+If present, the score export will try to carry through annotation fields such as `Func.refGene*`, `Gene.refGene*`, `GeneDetail.refGene*`, `ExonicFunc.refGene*`, `CLNDN`, `CLNALLELEID`, and `CLNSIG`.
+
 ### 2.2 Common Parameter Guidance
 
 | Parameter | Role | Tuning Advice |
