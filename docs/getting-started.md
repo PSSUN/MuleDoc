@@ -21,12 +21,6 @@ pip install --upgrade pip
 pip install -e .
 ```
 
-If you only want to build documentation:
-
-```bash
-pip install -r docs/requirements.txt
-```
-
 ### 1.3 External Tool Sanity Check
 
 ```bash
