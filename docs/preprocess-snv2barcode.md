@@ -1,11 +1,11 @@
 # Step 1 (Preprocessing): SNV-to-Barcode Matrix Construction
 
-`snv2barcode.py` converts sample-level SNV evidence into barcode×SNV `AnnData` matrices and produces a merged matrix for training.
+`prismsnv snv2barcode` converts sample-level SNV evidence into barcode×SNV `AnnData` matrices and produces a merged matrix for training.
 
 ## 1. Run Command
 
 ```bash
-python src/preprocess/snv2barcode.py src/preprocess/snv2barcode_config.yaml
+prismsnv snv2barcode /path/to/snv2barcode_config.yaml
 ```
 
 ---

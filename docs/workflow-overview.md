@@ -7,11 +7,11 @@ Only `BAM files` from single-cell RNA-seq read alignment are required to run the
 ## Pipeline Stages (User-Facing 2-Step View)
 
 1. **Step 1: Preprocessing**
-   - `src/preprocess/bam2vcf.sh`: call SNVs from multiple BAM files and remove known RNA editing sites.
-   - `src/preprocess/snv2barcode.py`: build per-sample and merged barcode×SNV matrices.
+   - `prismsnv bam2vcf`: call SNVs from multiple BAM files and remove known RNA editing sites.
+   - `prismsnv snv2barcode`: build per-sample and merged barcode×SNV matrices.
 2. **Step 2: Training**
-   - `src/train/pre_train.py`: pretrain RNA backbone and prepare aligned finetuning data.
-   - `src/train/snv_effect.py`: train SNV perturbation model and export attention/score outputs.
+   - `prismsnv pre_train`: pretrain RNA backbone and prepare aligned finetuning data.
+   - `prismsnv snv_effect`: train SNV perturbation model and export attention/score outputs.
 
 ## Stage Handoffs (Critical)
 

@@ -1,17 +1,17 @@
 # Step 2 (Training): SNV Perturbation Modeling
 
-`snv_effect.py` trains the SNV perturbation model on top of RNA backbone representations and exports ranking/scoring outputs.
+`prismsnv snv_effect` trains the SNV perturbation model on top of RNA backbone representations and exports ranking/scoring outputs.
 
 ## 1. Run Command
 
 ```bash
-python src/train/snv_effect.py -y src/train/train_config.yaml
+prismsnv snv_effect -y /path/to/train_config.yaml
 ```
 
 Multi-GPU distributed mode:
 
 ```bash
-torchrun --nproc_per_node=4 src/train/snv_effect.py -y src/train/train_config.yaml
+torchrun --nproc_per_node=4 -m prismsnv.cli snv_effect -y /path/to/train_config.yaml
 ```
 
 ---
@@ -91,7 +91,7 @@ Additional notes:
 
 ## 4. Distributed Execution Notes
 
-Distributed mode is enabled when launched by `torchrun` with proper env vars (`RANK`, `WORLD_SIZE`, etc.).
+Distributed mode is enabled when launched by `torchrun` with proper env vars (`RANK`, `WORLD_SIZE`, etc.). With an installed package, use `torchrun -m prismsnv.cli snv_effect ...` so each process enters the PrismSNV CLI.
 
 Behavior highlights:
 

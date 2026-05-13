@@ -1,17 +1,17 @@
 # Step 2 (Training): RNA Backbone Pretraining
 
-`pre_train.py` builds the RNA backbone and writes encoder-derived latent representations into the finetuning dataset used by `snv_effect.py`.
+`prismsnv pre_train` builds the RNA backbone and writes encoder-derived latent representations into the finetuning dataset used by `prismsnv snv_effect`.
 
 ## 1. Run Command
 
 ```bash
-python src/train/pre_train.py -y src/train/train_config.yaml
+prismsnv pre_train -y /path/to/train_config.yaml
 ```
 
 Positional config path is also supported:
 
 ```bash
-python src/train/pre_train.py src/train/train_config.yaml
+prismsnv pre_train /path/to/train_config.yaml
 ```
 
 ---
@@ -114,8 +114,8 @@ Additional notes:
 
 Downstream usage:
 
-- `finetune_aligned.h5ad` is auto-loaded by `snv_effect.py` from `result_folder`
-- `rna_backbone_pretrained.pt` is used for optional weight transfer in `snv_effect.py`
+- `finetune_aligned.h5ad` is auto-loaded by `prismsnv snv_effect` from `result_folder`
+- `rna_backbone_pretrained.pt` is used for optional weight transfer in `prismsnv snv_effect`
 
 ---
 

@@ -7,26 +7,50 @@
 | Component | Recommended Version | Notes |
 |---|---|---|
 | Python | 3.10+ | Keep versions consistent across team environments |
-| samtools | 1.10+ | Used by `bam2vcf.sh` for filtering/indexing/mpileup |
+| Bash | system/Git Bash/WSL | Required by `prismsnv bam2vcf` |
+| samtools | 1.10+ | Used by `prismsnv bam2vcf` for filtering/indexing/mpileup |
 | bedtools | 2.29+ | Used to remove known RNA editing sites |
 | VarScan | 2.x | Matches `java -jar VarScan.jar` invocation |
 | Java | 8+ | Required to run VarScan |
+| awk/gawk | system/gawk | Used by the BAM-to-VCF shell pipeline |
 
 ### 1.2 Python Environment Setup
 
 ```bash
-python -m venv .venv
-. .venv/Scripts/activate
+conda create -n prismsnv python=3.10 -y
+conda activate prismsnv
 pip install --upgrade pip
 pip install -e .
+```
+
+Run the install command from the PrismSNV repository root. Use `pip install .` instead of `pip install -e .` if you want a non-editable install.
+
+`prismsnv bam2vcf` also needs command-line tools available in `PATH`:
+
+```bash
+conda install -c conda-forge -c bioconda bash samtools bedtools openjdk gawk -y
+```
+
+You also need a VarScan JAR file and should pass it at runtime with `--varscan-jar`.
+
+After installation, confirm that the package command is available:
+
+```bash
+prismsnv --help
+prismsnv bam2vcf --help
+prismsnv snv2barcode --help
+prismsnv pre_train --help
+prismsnv snv_effect --help
 ```
 
 ### 1.3 External Tool Sanity Check
 
 ```bash
+bash --version
 samtools --version
 bedtools --version
 java -version
+awk --version
 ```
 
 Proceed once these commands return version information.
@@ -44,20 +68,20 @@ The full workflow uses two groups of inputs.
 | `reference.fa` | Reference genome | Yes |
 | `RNA_editing.bed` | Known RNA editing sites; you can download [here](https://doi.org/10.6084/m9.figshare.30460229) | Yes |
 | `*.bam` + `*.bai` | Per-sample alignment data | Yes |
-| sample-level VCF | SNV source for `snv2barcode.py` | Yes |
+| sample-level VCF | SNV source for `prismsnv snv2barcode` | Yes |
 | barcode file | Build barcode×SNV matrix | Yes |
 
 ### 2.2 Training Inputs
 
 | Input | Source | Required |
 |---|---|---|
-| `all_samples_merged_barcode_snv_matrix.h5ad` | Output from `snv2barcode` | Yes (`snv_effect`) |
-| `ann_csv` | SNV annotation table | Optional (`snv_effect`) |
+| `all_samples_merged_barcode_snv_matrix.h5ad` | Output from `prismsnv snv2barcode` | Yes (`prismsnv snv_effect`) |
+| `ann_csv` | SNV annotation table | Optional (`prismsnv snv_effect`) |
 
 Notes:
 
-- `pre_train.py` consumes the raw RNA AnnData paths configured in YAML and generates the aligned training artifacts itself; `pretrain_adata.h5ad` and `finetune_adata.h5ad` should not be listed here as standalone user-prepared training inputs.
-- `snv_effect.py` reads the RNA-side artifact from `result_folder/finetune_aligned.h5ad`, which is produced by `pre_train.py`.
+- `prismsnv pre_train` consumes the raw RNA AnnData paths configured in YAML and generates the aligned training artifacts itself; `pretrain_adata.h5ad` and `finetune_adata.h5ad` should not be listed here as standalone user-prepared training inputs.
+- `prismsnv snv_effect` reads the RNA-side artifact from `result_folder/finetune_aligned.h5ad`, which is produced by `prismsnv pre_train`.
 
 Important for pretraining batch-aware behavior:
 
@@ -86,18 +110,29 @@ project-root/
 
 ```bash
 # Step 1: Preprocessing
-# If you start from raw BAM files, run bam2vcf.sh first.
-python src/preprocess/snv2barcode.py src/preprocess/snv2barcode_config.yaml
+# If you start from raw BAM files, run BAM-to-VCF calling first.
+prismsnv bam2vcf \
+  --outer-jobs 6 \
+  --inner-threads 4 \
+  --reference /path/to/genome.fa \
+  --varscan-jar /path/to/VarScan.jar \
+  --rna-edit-bed /path/to/RNA_editing.bed \
+  --out-dir ./snv_call_out \
+  --bam-files /path/to/sample1.bam /path/to/sample2.bam
+
+prismsnv snv2barcode /path/to/snv2barcode_config.yaml
 
 # Step 2: Training
 # 2.1 Pretrain RNA backbone
-python src/train/pre_train.py -y src/train/train_config.yaml
+prismsnv pre_train -y /path/to/train_config.yaml
 
 # 2.2 Train and score SNV perturbation effects
-python src/train/snv_effect.py -y src/train/train_config.yaml
+prismsnv snv_effect -y /path/to/train_config.yaml
 ```
 
-This is the full user-facing flow: one preprocessing step, then one training step.
+This is the full user-facing flow: preprocessing first, then training.
+
+On Windows, run `prismsnv bam2vcf` in an environment where Bash can access the input files, such as WSL or Git Bash.
 
 ---
 

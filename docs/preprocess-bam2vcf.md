@@ -1,18 +1,18 @@
 # Step 1 (Preprocessing): BAM-to-VCF Calling
 
-`bam2vcf.sh` calls SNVs from BAM files and removes known RNA editing sites in the final filtering step.
+`prismsnv bam2vcf` calls the packaged BAM-to-VCF pipeline from an installed PrismSNV environment. It calls SNVs from BAM files and removes known RNA editing sites in the final filtering step.
 
 ## 1. Command and Arguments
 
 ```bash
-bash src/preprocess/bam2vcf.sh \
+prismsnv bam2vcf \
   --outer-jobs <OUTER_JOBS> \
   --inner-threads <INNER_THREADS> \
   --reference <reference.fa> \
   --varscan-jar <VarScan.jar> \
   --rna-edit-bed <RNA_editing.bed> \
   --out-dir <output_dir> \
-  <bam1> [bam2 ...]
+  --bam-files <bam1> [bam2 ...]
 ```
 
 ### Argument Reference
@@ -25,20 +25,22 @@ bash src/preprocess/bam2vcf.sh \
 | `--varscan-jar` | Path to VarScan JAR | `/path/VarScan.jar` |
 | `--rna-edit-bed` | Known RNA editing BED file | `RNA_editing.bed` |
 | `--out-dir` | Output directory | `./snv_call_out` |
-| `bam1...` | One or more BAM files | `sample1.bam sample2.bam` |
+| `--bam-files` | One or more BAM files | `sample1.bam sample2.bam` |
 
 ### Example
 
 ```bash
-bash src/preprocess/bam2vcf.sh \
+prismsnv bam2vcf \
   --outer-jobs 6 \
   --inner-threads 4 \
   --reference genome.fa \
   --varscan-jar VarScan.jar \
   --rna-edit-bed RNA_edit.bed \
   --out-dir ./out \
-  sample1.bam sample2.bam
+  --bam-files sample1.bam sample2.bam
 ```
+
+The command requires `bash`, `samtools`, `bedtools`, `java`, and `awk` in `PATH`. On Windows, run it in an environment where Bash can access the input files, such as WSL or Git Bash.
 
 ---
 
@@ -97,7 +99,7 @@ If required files are missing, the script exits early.
 - `{sample}.f1804q20.vcf`
 - `{sample}.f1804q20.no_rna_editing.vcf` (recommended downstream input)
 
-In most workflows, `no_rna_editing.vcf` is used as `samples.<name>.vcf` in `snv2barcode.py`.
+In most workflows, `no_rna_editing.vcf` is used as `samples.<name>.vcf` in the `prismsnv snv2barcode` configuration.
 
 ---
 

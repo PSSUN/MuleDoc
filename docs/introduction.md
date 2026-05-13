@@ -34,15 +34,15 @@ The main challenge is not obtaining either layer alone, but linking them at sing
 PrismSNV uses a three-stage framework: evidence construction → representation learning → perturbation scoring.
 
 1. **SNV evidence construction (preprocess)**
-   - `bam2vcf.sh`: BAM filtering, pileup, SNV calling, and RNA editing-site exclusion;
-   - `snv2barcode.py`: barcode×SNV sparse matrix construction with ALT/REF support layers.
+   - `prismsnv bam2vcf`: BAM filtering, pileup, SNV calling, and RNA editing-site exclusion;
+   - `prismsnv snv2barcode`: barcode×SNV sparse matrix construction with ALT/REF support layers.
 
 2. **State representation learning (pre-train)**
-   - `pre_train.py`: VAE-based RNA backbone pretraining to learn latent cell-state representations;
+   - `prismsnv pre_train`: VAE-based RNA backbone pretraining to learn latent cell-state representations;
    - optional adversarial branch for batch-effect attenuation.
 
 3. **SNV perturbation effect estimation (snv-effect)**
-   - `snv_effect.py`: SNV embedding + attention in latent space for conditional perturbation scoring;
+   - `prismsnv snv_effect`: SNV embedding + attention in latent space for conditional perturbation scoring;
    - outputs at both cell and cell-type granularity.
 
 ---
@@ -51,7 +51,7 @@ PrismSNV uses a three-stage framework: evidence construction → representation 
 
 ### 3.1 Probabilistic treatment of missing ALT support
 
-In `snv2barcode.py`, REF-only observations are not naively collapsed to zero. Instead, posterior probabilities are computed from priors and read counts, and retained as `-1` evidence when criteria are satisfied.
+In `prismsnv snv2barcode`, REF-only observations are not naively collapsed to zero. Instead, posterior probabilities are computed from priors and read counts, and retained as `-1` evidence when criteria are satisfied.
 
 ### 3.2 State-first, perturbation-second strategy
 
