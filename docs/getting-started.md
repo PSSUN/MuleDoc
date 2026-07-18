@@ -41,6 +41,7 @@ prismsnv bam2vcf --help
 prismsnv snv2barcode --help
 prismsnv pre_train --help
 prismsnv snv_effect --help
+prismsnv get_template --help
 ```
 
 ### 1.3 External Tool Sanity Check
@@ -109,6 +110,10 @@ project-root/
 ## 4. Minimal Execution Order
 
 ```bash
+# Step 0: Generate and fill in the training config template
+prismsnv get_template --output /path/to/train_config.yaml
+# Edit train_config.yaml before proceeding.
+
 # Step 1: Preprocessing
 # If you start from raw BAM files, run BAM-to-VCF calling first.
 prismsnv bam2vcf \

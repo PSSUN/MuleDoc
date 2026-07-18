@@ -3,6 +3,10 @@
 ## 1. End-to-End Commands
 
 ```bash
+# Step 0: Generate config template
+prismsnv get_template --output train_config.yaml
+# Edit train_config.yaml to fill in your paths and parameters before proceeding.
+
 # Step 1: Preprocessing
 # 1.1 BAM -> VCF
 prismsnv bam2vcf \
@@ -23,6 +27,7 @@ prismsnv pre_train -y /path/to/train_config.yaml
 
 # 2.2 Train and score SNV perturbation effects
 prismsnv snv_effect -y /path/to/train_config.yaml
+# For multi-GPU: prismsnv snv_effect --n_gpu 4 -y /path/to/train_config.yaml
 ```
 
 ## 2. Checkpoints After Each Step

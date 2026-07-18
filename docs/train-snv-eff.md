@@ -8,10 +8,10 @@
 prismsnv snv_effect -y /path/to/train_config.yaml
 ```
 
-Multi-GPU distributed mode:
+Multi-GPU distributed mode (pass `--n_gpu` to launch `torchrun` automatically):
 
 ```bash
-torchrun --nproc_per_node=4 -m prismsnv.cli snv_effect -y /path/to/train_config.yaml
+prismsnv snv_effect --n_gpu 4 -y /path/to/train_config.yaml
 ```
 
 ---
@@ -91,7 +91,7 @@ Additional notes:
 
 ## 4. Distributed Execution Notes
 
-Distributed mode is enabled when launched by `torchrun` with proper env vars (`RANK`, `WORLD_SIZE`, etc.). With an installed package, use `torchrun -m prismsnv.cli snv_effect ...` so each process enters the PrismSNV CLI.
+Pass `--n_gpu <N>` (where N > 1) to have the CLI automatically re-launch itself under `torchrun --standalone --nproc_per_node=N`. No manual `torchrun` invocation is needed. If the process is already running under a distributed launcher (i.e., `WORLD_SIZE > 1` or `LOCAL_RANK` is set), `--n_gpu` is ignored and the existing environment is used.
 
 Behavior highlights:
 

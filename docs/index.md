@@ -10,7 +10,8 @@ This documentation describes the complete PrismSNV pipeline:
   2. [Getting Started](getting-started.md)
   3. [Workflow Overview](workflow-overview.md)
   4. [End-to-End Example](end-to-end.md)
-- If you already know the basics, think of the runtime flow as just two steps:
+- If you already know the basics, think of the runtime flow as three steps:
+  - Step 0 (Setup): Get Config Template
   - Step 1 (Preprocessing): BAM-to-VCF Calling, then SNV-to-Barcode Matrix Construction
   - Step 2 (Training): RNA Backbone Pretraining, then SNV Perturbation Modeling
 
@@ -25,6 +26,7 @@ preprocess-bam2vcf
 preprocess-snv2barcode
 train-pre-train
 train-snv-eff
+get-template
 end-to-end
 outputs-and-faq
 contact

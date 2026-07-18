@@ -6,6 +6,8 @@ Only `BAM files` from single-cell RNA-seq read alignment are required to run the
 
 ## Pipeline Stages (User-Facing 2-Step View)
 
+0. **Setup**
+   - `prismsnv get_template`: write a `train_config.yaml` template for use with `pre_train` and `snv_effect`.
 1. **Step 1: Preprocessing**
    - `prismsnv bam2vcf`: call SNVs from multiple BAM files and remove known RNA editing sites.
    - `prismsnv snv2barcode`: build per-sample and merged barcode×SNV matrices.
