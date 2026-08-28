@@ -24,18 +24,27 @@ result_folder: ./snv_result
 snv_eff:
   adata_snv: /path/to/all_samples_merged_barcode_snv_matrix.h5ad
   ann_csv: /path/to/annotation.csv  # optional
-  min_cnt: 100
+  min_cnt: 50
   n_top: 50
-  batch_size_train: 256
-  num_epochs: 500
+  batch_size_train: 64
+  num_epochs: 200
   latent_dim: 128
   snv_emb_dim: 64
-  top_k_attention: 2000
-  attn_batch: 256
+  top_k_attention: 5000
+  attn_batch: 128
+  score_attn_batch: 128
+  score_cell_batch: 128
   seed: 42
+  rank_lambda_max: 0.05
+  rank_margin_max: 0.05
+  decoder_lr: 0.0001
+  decoder_l2_sp_lambda: 0.0
+  delta_ratio_cap: 0.8
+  delta_ratio_lambda: 100.0
+  freeze_backbone: true
   celltype_key: cell_cluster
+  cluster_resolution: 0.4
   cell_type_free: false
-  freeze_backbone: false
   eval_only: false
   pair_chunk: 20000
   batch_key: sample
@@ -64,18 +73,34 @@ If present, the score export will try to carry through annotation fields such as
 
 | Parameter | Role | Tuning Advice |
 |---|---|---|
-| `min_cnt` | Initial SNV filtering threshold | Lower for small datasets |
-| `n_top` | Number of SNVs retained after initial filtering | Scale with dataset complexity |
-| `top_k_attention` | Number of top-attention SNVs for scoring | Increase for larger cohorts |
-| `attn_batch` | Batch size for attention/scoring | Memory-sensitive |
+| `min_cnt` | SNV filtering threshold; an SNV is kept when both its positive and negative barcode support counts reach `min_cnt` | Lower for small datasets |
+| `n_top` | Number of top SNVs shown in the diagnostic stacked-bar plot (`snv_top_stacked_bar.png`); does not affect the SNVs used for training | Plot-only knob |
+| `top_k_attention` | Number of SNVs retained by latent-contribution screening | Increase for larger cohorts |
+| `attn_batch` | Batch size for latent-contribution screening | Memory-sensitive |
+| `score_attn_batch` | Batch size for per-cell-type latent-contribution ranking during scoring; falls back to `attn_batch` when omitted | Lower if scoring runs out of memory |
+| `score_cell_batch` | Batch size for per-cell counterfactual SNV scoring; falls back to `attn_batch` when omitted | Lower if scoring runs out of memory |
 | `pair_chunk` | Sparse decode chunk size | Lower first when hitting OOM |
 | `cell_type_free` | Skip cell-type-aware scoring | Useful for fast global screening |
+| `cluster_resolution` | Leiden clustering resolution used to group cells into cell types (cell-type mode only) | Raise for more, smaller clusters; lower for fewer, larger clusters |
+
+### 2.3 Training-Control Fields
+
+| Parameter | Role | Tuning Advice |
+|---|---|---|
+| `rank_lambda_max` | Maximum weight of the rank loss contrasting true SNV assignments against same-batch shuffled negatives; the weight ramps up with training progress | Keep small (0–0.1); set 0 to disable |
+| `rank_margin_max` | Maximum margin enforced between true-pair loss and shuffled-negative loss | Keep small (0–0.1) |
+| `decoder_lr` | Learning rate for the copied RNA decoder parameters; SNV-specific modules keep the main `1e-3` learning rate | Typical 1e-4 |
+| `decoder_l2_sp_lambda` | L2-SP weight anchoring copied decoder parameters to their pretrained values | 0 disables anchoring |
+| `delta_ratio_cap` | Per-cell soft cap on the latent perturbation magnitude `||delta_z|| / ||z||` | Typical 0.8 |
+| `delta_ratio_lambda` | Weight of the squared soft penalty applied above `delta_ratio_cap` | 0 disables the penalty |
+
+Both `delta_ratio_*` terms constrain how far a single SNV may push a cell's latent representation, which keeps counterfactual scores locally plausible.
 
 ---
 
 ## 3. Internal Stages
 
-1. Load and filter SNV matrix (`min_cnt`, `n_top`).
+1. Load and filter SNV matrix (`min_cnt`); `n_top` only controls the top-SNV diagnostic stacked-bar plot.
 2. Build `SNVPerturbationModel` (SNV embedding + attention + conditional perturbation).
 3. Optionally load pretrained backbone weights.
 4. Train and save model checkpoint.
@@ -86,6 +111,9 @@ Additional notes:
 - If `freeze_backbone=true`, encoder-side parameters are frozen while SNV-related components remain trainable.
 - If `eval_only=true`, `snv_perturbation_model.pt` must already exist.
 - RNA input is auto-loaded from `result_folder/finetune_aligned.h5ad`.
+- In cell-type mode, cells are clustered with Leiden on the encoder latent (`X_latent`) at `cluster_resolution`; the resulting labels are written to `obs[celltype_key]` and used for marker-gene identification and per-cell-type scoring.
+- During optimization, copied decoder parameters use `decoder_lr` and can be anchored to pretrained values by `decoder_l2_sp_lambda`, while SNV-specific modules keep the main learning rate.
+- The training loss includes a rank term (weight `rank_lambda_max`, margin `rank_margin_max`) that contrasts true SNV–cell pairs against same-batch shuffled negatives, plus a soft penalty (`delta_ratio_cap`, `delta_ratio_lambda`) that bounds the relative latent shift a single SNV can induce.
 
 ---
 

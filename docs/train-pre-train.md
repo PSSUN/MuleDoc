@@ -27,21 +27,24 @@ pre_train:
     finetune_adata: /path/to/finetune.h5ad
     expected_doublet_rate: 0.05
     remove_scrublet: false
+    mt_percent: 15
   training:
-    num_epochs: 100
+    num_epochs: 200
     latent_dim: 128
-    mu_activation: exp
+    mu_activation: umi
     use_nb: true
     batch_size: 512
     lr: 0.001
     weight_decay: 1e-5
     kl_warmup_epochs: 20
+    beta_max: 3.0
     grad_clip: 5.0
     device: cuda
     hvg_only: true
     batch_key: batch
     batch_emb_dim: 16
-    lambda_adv: 0.0
+    lambda_adv: 1.0
+    disc_hidden_dim: 128
 ```
 
 ### 2.1 Required Fields
@@ -55,10 +58,14 @@ pre_train:
 | Parameter | Typical Start | Notes |
 |---|---|---|
 | `latent_dim` | 128 | Latent representation size |
-| `use_nb` | `true` | Recommended for raw UMI count modeling |
+| `mu_activation` | `umi` | Decoder mean activation; must be one of `umi`, `softplus`, `identity` |
+| `use_nb` | `true` | Recommended for raw UMI count modeling (expects `mu_activation: umi`) |
 | `batch_size` | 256–1024 | Adjust by memory budget |
 | `kl_warmup_epochs` | 20 | Helps stabilize KL term learning |
+| `beta_max` | 1.0–3.0 | Final KL weight reached after warmup; early-stopping patience activates once reached |
 | `lambda_adv` | 0.0–1.0 | Adversarial strength for batch-effect mitigation |
+| `disc_hidden_dim` | unset | Hidden size of the adversarial discriminator; falls back to `latent_dim` when omitted |
+| `mt_percent` | 15 | Alignment QC: drops cells whose mitochondrial read fraction exceeds this threshold (0–100) |
 
 ### 2.3 Note
 
@@ -88,11 +95,22 @@ Behavior note:
 - If you introduce external data for pretraining, it is recommended that `pretrain_adata` also includes the data represented in `finetune_adata` (or a sufficiently overlapping distribution), so representation transfer remains stable.
 - If you do not want to introduce external data, set both `pretrain_adata` and `finetune_adata` to the same `.h5ad` file.
 
+Alignment QC note:
+
+- `pre_train.align.mt_percent` (default 15) removes cells with a mitochondrial read percentage above the threshold from both `pretrain_adata` and `finetune_adata` before alignment. Mitochondrial genes are recognized by the `MT-` prefix in gene symbols (`var["gene_name"]`, `var["gene_symbol"]`, or `var_names`).
+- Set `mt_percent: 100` to keep all cells.
+
+Training dynamics note:
+
+- The KL weight ramps linearly from 0 to `beta_max` over `kl_warmup_epochs`; validation-based early stopping only starts once the full `beta_max` is reached.
+- `mu_activation` accepts `umi` (raw UMI counts, recommended with `use_nb: true`), `softplus`, or `identity` (corrected/normalized data). Other values are rejected with a config error.
+- `disc_hidden_dim` only takes effect when `lambda_adv` > 0 and `batch_key` has more than one level; when omitted it defaults to `latent_dim`.
+
 ---
 
 ## 3. Internal Stages
 
-1. Align gene space between pretrain and finetune RNA datasets.
+1. Align gene space between pretrain and finetune RNA datasets, removing cells above the `mt_percent` mitochondrial threshold (and doublets, if `remove_scrublet: true`).
 2. Train `RNAOnlyBackbone` (VAE with NB reconstruction and optional adversarial branch).
 3. Save backbone checkpoint.
 4. Encode finetune RNA into `obsm["X_latent"]`.

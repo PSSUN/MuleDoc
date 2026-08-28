@@ -48,6 +48,7 @@ prismsnv snv_effect -y /path/to/train_config.yaml
 
 - Step 1 is slow: usually large BAM files or storage I/O bottlenecks; reduce `OUTER_JOBS` first.
 - Step 1 is also where a very large SNV union or overly aggressive `threads` in `prismsnv snv2barcode` can slow the run down.
-- Step 2 OOM: reduce `batch_size_train` and `pair_chunk` first.
+- Step 2 OOM during training: reduce `batch_size_train` and `pair_chunk` first.
+- Step 2 OOM during scoring: reduce `score_attn_batch` and `score_cell_batch` (they default to `attn_batch` when omitted).
 
 Before running Step 2, confirm that `all_samples_merged_barcode_snv_matrix.h5ad` from preprocessing is available.
